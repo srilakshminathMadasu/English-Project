@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Roman Times – Julius Caesar</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --parchment:#f2e8c9; --parchment-dark:#e8d9a8; --parchment-light:#faf4e1;
+  --ink:#1a1208; --ink-light:#3a2e1a; --ink-faded:#6b5a3e;
+  --gold:#b8860b; --gold-bright:#f0c030; --red:#8b1a1a; --border:#4a3520;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#b8a060;background-image:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(0,0,0,0.03) 40px,rgba(0,0,0,0.03) 41px);font-family:'IM Fell English',Georgia,serif;color:var(--ink);padding:16px}
+.newspaper{max-width:1120px;margin:0 auto;background:var(--parchment);box-shadow:0 8px 60px rgba(0,0,0,0.5);position:relative;overflow:hidden}
+.newspaper::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(80,50,10,0.22) 100%);pointer-events:none;z-index:999}
+
+/* LITERARY DEVICE TOOLTIPS */
+.ld{border-bottom:2px solid var(--gold);cursor:help;position:relative;display:inline}
+.ld::after{content:attr(data-type) ': ' attr(data-label);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--gold-bright);font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.08em;padding:4px 8px;white-space:nowrap;border-radius:2px;pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:100;margin-bottom:4px}
+.ld:hover::after{opacity:1}
+.ld-key{background:var(--parchment-dark);border:1px solid var(--border);padding:10px 14px;margin:10px 0;font-size:0.78rem}
+.ld-key strong{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.1em;display:block;margin-bottom:5px;color:var(--ink-faded)}
+.ld-item{display:inline-block;border-bottom:2px solid var(--gold);margin:2px 6px 2px 0;font-style:italic}
+
+/* TICKER */
+.ticker-wrap{background:var(--red);color:#fff;overflow:hidden;white-space:nowrap;padding:6px 0;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.15em}
+.ticker-label{background:var(--ink);color:var(--gold-bright);padding:0 14px;margin-right:16px;font-weight:700}
+.ticker-inner{display:inline-block;animation:ticker 40s linear infinite}
+@keyframes ticker{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+/* MASTHEAD */
+.masthead{padding:16px 32px 10px;text-align:center;border-bottom:3px double var(--border);background:linear-gradient(180deg,var(--parchment-light) 0%,var(--parchment) 100%)}
+.masthead-top{display:flex;justify-content:space-between;font-size:0.68rem;color:var(--ink-faded);font-style:italic;border-bottom:1px solid var(--gold);padding-bottom:5px;margin-bottom:8px}
+.mast-rule{display:flex;align-items:center;gap:12px;margin:4px 0}
+.mast-rule hr{flex:1;border:none;border-top:2px solid var(--gold)}
+.mast-rule .orn{color:var(--gold);font-size:1.3rem}
+h1.logo{font-family:'Cinzel',serif;font-size:clamp(2.6rem,7vw,5.8rem);font-weight:900;letter-spacing:0.05em;line-height:1;text-shadow:3px 3px 0 rgba(0,0,0,0.1);animation:fadeDown 0.8s ease both}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
+.masthead-sub{font-style:italic;font-size:0.82rem;color:var(--ink-faded);letter-spacing:0.2em;margin:4px 0 8px}
+.edition-bar{background:var(--ink);color:var(--gold-bright);font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.2em;padding:5px;margin-top:8px}
+
+/* NAV */
+nav.section-nav{display:flex;justify-content:center;flex-wrap:wrap;border-bottom:3px double var(--border);background:var(--parchment-dark)}
+nav.section-nav a{font-family:'Cinzel',serif;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;color:var(--ink);text-decoration:none;padding:8px 18px;border-right:1px solid var(--border);transition:all 0.2s}
+nav.section-nav a:first-child{border-left:1px solid var(--border)}
+nav.section-nav a:hover{background:var(--ink);color:var(--gold-bright)}
+
+/* BODY */
+.paper-body{padding:0 28px 40px}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:1fr 300px;gap:0;border-bottom:2px solid var(--border);padding:22px 0;animation:fadeUp 0.9s 0.2s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.hero-text{padding-right:22px;border-right:2px solid var(--border)}
+.kicker{font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.25em;color:var(--red);font-weight:700;display:block;margin-bottom:6px}
+.hero-text h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;line-height:1.05;margin-bottom:10px}
+.deck{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--ink-light);line-height:1.55;margin-bottom:14px}
+.byline{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;color:var(--ink-faded);display:block;margin-bottom:10px}
+.hero-text p{font-size:0.88rem;line-height:1.75;color:var(--ink-light);text-align:justify;margin-bottom:8px}
+.drop::first-letter{font-family:'Cinzel',serif;font-size:3.8em;font-weight:900;float:left;line-height:0.72;margin:6px 7px -2px 0;color:var(--ink)}
+.hero-img-col{padding-left:22px;display:flex;flex-direction:column;gap:14px}
+
+/* SVG FRAMES */
+.svg-frame{border:2px solid var(--border);background:var(--parchment-dark);overflow:hidden}
+.svg-frame svg{width:100%;display:block}
+.svg-frame figcaption{font-style:italic;font-size:0.7rem;color:var(--ink-faded);padding:5px 8px;border-top:1px solid var(--border);background:var(--parchment-dark)}
+
+/* PULL QUOTE */
+.pull-quote{border-top:3px solid var(--gold);border-bottom:3px solid var(--gold);padding:10px 0;text-align:center;margin:12px 0}
+.pull-quote blockquote{font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;line-height:1.45}
+.pull-quote cite{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.12em;color:var(--ink-faded);display:block;margin-top:4px}
+
+/* THREE COLS */
+.three-cols{display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;border-bottom:2px solid var(--border);padding:18px 0}
+.col-div{background:var(--border);margin:0 14px}
+.col{padding:0 10px}
+.col:first-child{padding-left:0}
+.col:last-child{padding-right:0}
+.col h3{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;line-height:1.2;margin-bottom:6px}
+.col p{font-size:0.84rem;line-height:1.72;color:var(--ink-light);text-align:justify;margin-bottom:7px}
+
+/* GOLD RULE */
+.gold-rule{text-align:center;color:var(--gold);letter-spacing:0.4em;padding:10px 0;font-size:1rem;border-top:1px solid var(--parchment-dark);border-bottom:1px solid var(--parchment-dark);margin:6px 0}
+
+/* SECTION LABEL */
+.section-label{font-family:'Cinzel',serif;font-size:0.72rem;letter-spacing:0.22em;font-weight:700;color:var(--ink-faded);text-align:center;padding:12px 0 8px}
+.section-label::before{content:'— ';color:var(--gold)}
+.section-label::after{content:' —';color:var(--gold)}
+
+/* CHARACTER CARDS */
+.chars-grid{display:grid;grid-template-columns:repeat(4,1fr);border:2px solid var(--border);margin-bottom:22px}
+.char-card{padding:16px 12px;border-right:1px solid var(--border);text-align:center;cursor:pointer;position:relative;overflow:hidden}
+.char-card:last-child{border-right:none}
+.char-card::before{content:'';position:absolute;inset:0;background:var(--ink);transform:translateY(100%);transition:transform 0.3s ease;z-index:0}
+.char-card:hover::before{transform:translateY(0)}
+.char-card>*{position:relative;z-index:1}
+.char-card:hover h4,.char-card:hover p{color:var(--parchment)!important}
+.char-card:hover .char-role{color:var(--gold-bright)!important}
+.char-svg-wrap{width:80px;height:80px;border-radius:50%;border:2px solid var(--gold);margin:0 auto 8px;overflow:hidden;background:var(--parchment-dark)}
+.char-svg-wrap svg{width:100%;height:100%}
+.char-card h4{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;margin-bottom:2px}
+.char-role{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.1em;color:var(--red);display:block;margin-bottom:6px}
+.char-card p{font-size:0.75rem;line-height:1.55;color:var(--ink-faded)}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,6,2,0.78);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex;animation:fadeIn 0.25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--parchment);border:3px double var(--border);max-width:560px;width:100%;padding:32px;position:relative;animation:popIn 0.3s ease;max-height:90vh;overflow-y:auto}
+@keyframes popIn{from{transform:scale(0.92);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{position:absolute;top:12px;right:16px;font-size:1.4rem;cursor:pointer;color:var(--ink-faded);background:none;border:none;font-family:serif}
+.modal-close:hover{color:var(--red)}
+.modal-svg-wrap{width:120px;height:120px;border-radius:50%;border:3px solid var(--gold);display:block;margin:0 auto 14px;overflow:hidden;background:var(--parchment-dark)}
+.modal-svg-wrap svg{width:100%;height:100%}
+.modal h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;text-align:center;margin-bottom:4px}
+.modal .role{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;color:var(--red);text-align:center;display:block;margin-bottom:14px}
+.modal p{font-size:0.9rem;line-height:1.75;color:var(--ink-light);margin-bottom:10px}
+.modal .quote{border-left:3px solid var(--gold);padding-left:12px;font-style:italic;color:var(--ink-faded);font-size:0.88rem;margin:12px 0}
+
+/* GALLERY */
+.gallery-strip{display:grid;grid-template-columns:repeat(4,1fr);border:2px solid var(--border);margin-bottom:22px;overflow:hidden}
+.gallery-item{position:relative;overflow:hidden;cursor:pointer;border-right:1px solid var(--border)}
+.gallery-item:last-child{border-right:none}
+.gallery-item svg{width:100%;display:block;transition:transform 0.5s}
+.gallery-item:hover svg{transform:scale(1.06)}
+.g-cap{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(10,6,2,0.85));color:var(--parchment);font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;padding:22px 8px 7px;transform:translateY(100%);transition:transform 0.3s}
+.gallery-item:hover .g-cap{transform:translateY(0)}
+
+/* TWO COL */
+.two-col-row{display:grid;grid-template-columns:1.5fr 1fr;gap:0;border-bottom:2px solid var(--border);padding:20px 0}
+.analysis{padding-right:22px;border-right:2px solid var(--border)}
+.analysis h2{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:900;line-height:1.15;margin-bottom:8px}
+.analysis p{font-size:0.86rem;line-height:1.75;color:var(--ink-light);text-align:justify;margin-bottom:8px}
+.omens-col{padding-left:22px}
+.omen-box{border:3px double var(--red);padding:14px;background:linear-gradient(135deg,rgba(139,26,26,0.05),transparent);margin-bottom:14px}
+.omen-box h3{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--red);text-align:center;margin-bottom:8px}
+.omen-box p{font-size:0.82rem;line-height:1.65;color:var(--ink-light);margin-bottom:7px}
+.omen{font-style:italic;color:var(--red)}
+.sidebar-item{padding-bottom:12px;margin-bottom:12px;border-bottom:1px solid var(--parchment-dark)}
+.sidebar-item:last-child{border-bottom:none}
+.sidebar-item h4{font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;margin-bottom:4px}
+.sidebar-item p{font-size:0.8rem;line-height:1.65;color:var(--ink-light)}
+
+/* FULL WIDTH SECTION */
+.full-section{border-bottom:2px solid var(--border);padding:20px 0}
+.full-section h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;margin-bottom:6px}
+.full-section p{font-size:0.86rem;line-height:1.75;color:var(--ink-light);text-align:justify;margin-bottom:8px}
+.section-banner{background:var(--ink);color:var(--gold-bright);font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.22em;padding:4px 10px;display:inline-block;margin-bottom:8px}
+
+/* POLITICAL CARTOON */
+.cartoon-box{border:2px solid var(--border);background:var(--parchment-dark);padding:0;margin:14px 0;text-align:center}
+.cartoon-box svg{width:100%;max-width:600px;display:block;margin:0 auto}
+.cartoon-box .caption{font-style:italic;font-size:0.75rem;color:var(--ink-faded);padding:6px 12px 8px;border-top:1px solid var(--border)}
+
+/* OBITUARIES */
+.obit-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:2px solid var(--border);margin:14px 0}
+.obit{padding:16px;border-right:1px solid var(--border)}
+.obit:last-child{border-right:none}
+.obit h3{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;border-bottom:1px solid var(--gold);padding-bottom:4px;margin-bottom:8px}
+.obit .obit-dates{font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:0.1em;color:var(--ink-faded);display:block;margin-bottom:6px}
+.obit p{font-size:0.82rem;line-height:1.68;color:var(--ink-light);margin-bottom:6px}
+.rip{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;color:var(--red);text-align:center;display:block;margin-top:8px;border-top:1px solid var(--border);padding-top:6px}
+
+/* EDITORIAL */
+.editorial-box{background:linear-gradient(135deg,rgba(26,18,8,0.04),transparent);border:2px solid var(--border);padding:18px;margin:14px 0}
+.editorial-box h3{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:4px}
+.editorial-box p{font-size:0.85rem;line-height:1.75;color:var(--ink-light);text-align:justify;margin-bottom:8px}
+.editorial-sig{font-family:'Playfair Display',serif;font-style:italic;font-size:0.88rem;color:var(--ink-faded);text-align:right;border-top:1px solid var(--parchment-dark);padding-top:8px;margin-top:8px}
+
+/* BOTTOM GRID */
+.bottom-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:2px solid var(--border);padding-top:20px;margin-top:4px}
+.bcol{padding:0 18px;border-right:1px solid var(--border)}
+.bcol:first-child{padding-left:0}
+.bcol:last-child{border-right:none;padding-right:0}
+.bcol h3{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:8px;border-bottom:1px solid var(--gold);padding-bottom:4px}
+.bcol p,.bcol li{font-size:0.82rem;line-height:1.7;color:var(--ink-light)}
+.timeline-item{display:flex;gap:9px;margin-bottom:10px;align-items:flex-start}
+.act-badge{font-family:'Cinzel',serif;font-size:0.58rem;font-weight:700;color:var(--gold);background:var(--ink);padding:2px 5px;white-space:nowrap;margin-top:2px}
+.timeline-item p{margin:0;font-size:0.8rem}
+.qcard{border-left:2px solid var(--gold);padding-left:10px;margin-bottom:12px}
+.qcard p{font-style:italic;font-size:0.83rem}
+.qcard .qsrc{font-style:normal;font-size:0.7rem;color:var(--ink-faded);margin-top:3px}
+
+/* FOOTER */
+footer.paper-footer{border-top:3px double var(--border);padding:10px 28px;display:flex;justify-content:space-between;align-items:center;background:var(--parchment-dark);font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.1em;color:var(--ink-faded)}
+.footer-mid{font-family:'Playfair Display',serif;font-style:italic;font-size:0.75rem;color:var(--gold)}
+
+/* USEFUL LINKS */
+.links-box{background:var(--ink);color:var(--parchment);padding:14px 18px;margin:14px 0;border:2px solid var(--gold)}
+.links-box h3{font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:0.18em;color:var(--gold-bright);margin-bottom:10px}
+.links-box a{color:var(--gold-bright);font-size:0.8rem;display:block;margin-bottom:5px;text-decoration:none;font-family:'IM Fell English',serif;font-style:italic;transition:color 0.2s}
+.links-box a:hover{color:#fff}
+.links-box a::before{content:'→ ';font-style:normal}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* RESPONSIVE */
+@media(max-width:800px){
+  body{padding:6px}
+  .paper-body{padding:0 12px 28px}
+  .hero{grid-template-columns:1fr}
+  .hero-text{border-right:none;border-bottom:2px solid var(--border);padding-right:0;padding-bottom:16px;margin-bottom:16px}
+  .hero-img-col{padding-left:0;flex-direction:row;overflow-x:auto;gap:10px}
+  .three-cols{grid-template-columns:1fr}
+  .col-div{height:1px;width:100%;margin:12px 0}
+  .chars-grid{grid-template-columns:1fr 1fr}
+  .char-card:nth-child(2){border-right:none}
+  .char-card:nth-child(3){border-top:1px solid var(--border)}
+  .char-card:nth-child(4){border-top:1px solid var(--border);border-right:none}
+  .gallery-strip{grid-template-columns:1fr 1fr}
+  .two-col-row{grid-template-columns:1fr}
+  .analysis{border-right:none;padding-right:0;border-bottom:2px solid var(--border);padding-bottom:16px;margin-bottom:16px}
+  .omens-col{padding-left:0}
+  .obit-grid{grid-template-columns:1fr}
+  .obit{border-right:none;border-bottom:1px solid var(--border)}
+  .bottom-grid{grid-template-columns:1fr}
+  .bcol{border-right:none;border-bottom:1px solid var(--border);padding:0 0 16px 0;margin-bottom:16px}
+  .masthead{padding:12px 16px 8px}
+  footer.paper-footer{flex-direction:column;gap:4px;text-align:center}
+}
+</style>
+</head>
+<body>
+<div class="newspaper">
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <span class="ticker-label">BREAKING</span>
+  <span class="ticker-inner">CAESAR ASSASSINATED AT THE THEATRE OF POMPEY &nbsp;✦&nbsp; MARK ANTONY ADDRESSES THE MOB &nbsp;✦&nbsp; BRUTUS AND CASSIUS FLEE ROME &nbsp;✦&nbsp; CIVIL WAR FEARED IMMINENT &nbsp;✦&nbsp; CALPURNIA'S DREAMS GO UNHEEDED &nbsp;✦&nbsp; SOOTHSAYER'S WARNING IGNORED &nbsp;✦&nbsp; OCTAVIAN RETURNS TO CLAIM HIS INHERITANCE &nbsp;✦&nbsp;</span>
+</div>
+
+<!-- MASTHEAD / BANNER -->
+<header class="masthead">
+  <div class="masthead-top">
+    <span>VOL. DCCIX · NO. XLIV · THE IDES OF MARCH, XLIV B.C.</span>
+    <span>ESTABLISHED A.U.C. 709 · PRICE: ONE SESTERTIUS</span>
+  </div>
+  <div class="mast-rule"><hr><span class="orn">⚔</span><h1 class="logo">The Roman Times</h1><span class="orn">⚔</span><hr></div>
+  <div class="masthead-sub">Veritas · Honos · Gloria Romae — "All the News That's Fit to Chisel"</div>
+  <div class="edition-bar">✦ SPECIAL EDITION — EVENTS AT THE THEATRE OF POMPEY — SENATE IN CRISIS ✦</div>
+</header>
+
+<!-- NAV -->
+<nav class="section-nav">
+  <a href="#news">Front Page</a>
+  <a href="#supplements">More News</a>
+  <a href="#cartoon">Political Cartoon</a>
+  <a href="#editorial">Editorial</a>
+  <a href="#obituaries">Obituaries</a>
+  <a href="#personae">Personae</a>
+  <a href="#links">Resources</a>
+</nav>
+
+<!-- LITERARY DEVICE KEY -->
+<div style="padding:10px 28px 0;">
+  <div class="ld-key">
+    <strong>📜 LITERARY DEVICES — hover any underlined phrase to identify the device</strong>
+    <span class="ld-item">Metaphor</span>
+    <span class="ld-item">Simile</span>
+    <span class="ld-item">Allusion</span>
+    <span class="ld-item">Personification</span>
+    <span class="ld-item">Hyperbole</span>
+    <span class="ld-item">Irony</span>
+    <span class="ld-item">Rhetorical Device</span>
+    <span class="ld-item">Pun</span>
+  </div>
+</div>
+
+<div class="paper-body">
+
+<!-- ══ MAIN NEWS ARTICLE ══ -->
+<section class="hero" id="news">
+  <div class="hero-text">
+    <span class="kicker">☩ MAIN NEWS — FRONT PAGE ☩</span>
+    <h2>CAESAR SLAIN ON THE IDES OF MARCH</h2>
+    <p class="deck"><span class="ld" data-type="Hyperbole" data-label="exaggerates scale for effect">The Eternal City trembles and the very foundations of the Republic crack</span> as the Dictator Perpetuo falls to a band of Senators upon this most dreadful day</p>
+    <span class="byline">By Gaius Scribonius · Senate Correspondent · Published This Morning</span>
+    <p class="drop">Julius Caesar, Dictator Perpetuo of Rome, was this morning assassinated within the Theatre of Pompey, falling before an assembly of some twenty-three Senators armed with daggers concealed beneath their togas. The attack came as Caesar took his seat, at which moment the conspirators descended upon him with sudden and terrible violence.</p>
+    <p>Sources present at the scene report that Casca struck the first blow, followed swiftly by the others. Caesar is said to have defended himself briefly before recognizing among his attackers the face of Marcus Junius Brutus — <span class="ld" data-type="Allusion" data-label="references Brutus's famous ancestor who expelled Rome's kings">the man whose very name recalled the ancient liberators of Rome</span> — at which moment he ceased to struggle and drew his toga about his face to meet his end with the dignity of a Roman.</p>
+    <div class="pull-quote">
+      <blockquote>"Et tu, Bruté? — Then fall, Caesar."</blockquote>
+      <cite>— Last words attributed to Gaius Julius Caesar, Theatre of Pompey</cite>
+    </div>
+    <p>The body bore three-and-twenty wounds. <span class="ld" data-type="Metaphor" data-label="Caesar's body compared to a map of betrayal">Each wound a letter in the alphabet of treachery</span>, physicians summoned to the scene report that but a single wound to the chest proved fatal. The Senate hall fell into immediate panic, with citizens fleeing into the streets crying that tyrants walked among them.</p>
+    <p>This correspondent, who was present in the Forum when word arrived, reports that <span class="ld" data-type="Personification" data-label="abstract concept of fear given human action">Fear itself ran through the streets of Rome, knocking upon every door and window</span>, and that even the boldest of men were seen to pale.</p>
+    <!-- Literary Device Key for this article -->
+    <div class="ld-key">
+      <strong>LITERARY DEVICES IN THIS ARTICLE:</strong>
+      Hyperbole (deck) · Allusion to Brutus's ancestor (para. 2) · Metaphor — wounds as letters (para. 4) · Personification of Fear (para. 5)
+    </div>
+  </div>
+  <div class="hero-img-col">
+    <!-- Caesar Bust SVG -->
+    <figure class="svg-frame">
+      <svg viewBox="0 0 270 230" xmlns="http://www.w3.org/2000/svg">
+        <rect width="270" height="230" fill="#e0d098"/>
+        <rect x="78" y="188" width="114" height="13" rx="2" fill="#4a3520"/>
+        <rect x="88" y="181" width="94" height="9" rx="1" fill="#6b5a3e"/>
+        <path d="M93 160 Q74 142 79 118 Q83 103 97 99 L99 155Z" fill="#c8b070"/>
+        <path d="M177 160 Q196 142 191 118 Q187 103 173 99 L171 155Z" fill="#c8b070"/>
+        <path d="M97 99 Q135 84 173 99 L171 155 Q135 149 99 155Z" fill="#d4bc7a"/>
+        <rect x="116" y="151" width="38" height="28" rx="3" fill="#ccaa80"/>
+        <ellipse cx="135" cy="89" rx="37" ry="43" fill="#d4b896"/>
+        <ellipse cx="135" cy="54" rx="35" ry="8" fill="none" stroke="#4a6828" stroke-width="2.5"/>
+        <path d="M100 54 Q105 44 112 49 Q105 59 100 54Z" fill="#5a7830"/>
+        <path d="M111 47 Q116 37 123 42 Q116 52 111 47Z" fill="#6a8838"/>
+        <path d="M124 42 Q129 32 136 37 Q129 47 124 42Z" fill="#7a9840"/>
+        <path d="M143 42 Q148 32 155 37 Q148 47 143 42Z" fill="#7a9840"/>
+        <path d="M155 47 Q160 37 167 42 Q160 52 155 47Z" fill="#6a8838"/>
+        <path d="M166 54 Q171 44 178 49 Q171 59 166 54Z" fill="#5a7830"/>
+        <circle cx="135" cy="48" r="3.5" fill="#c8a020"/>
+        <path d="M108 82 Q122 76 135 78 Q148 76 162 82" stroke="#a08060" stroke-width="1.5" fill="none"/>
+        <ellipse cx="121" cy="88" rx="6.5" ry="5" fill="#2a1a08"/>
+        <ellipse cx="149" cy="88" rx="6.5" ry="5" fill="#2a1a08"/>
+        <circle cx="122" cy="87" r="2" fill="#fff" opacity="0.5"/>
+        <circle cx="150" cy="87" r="2" fill="#fff" opacity="0.5"/>
+        <path d="M133 96 L131 108 Q135 112 139 108 L137 96" fill="#c0a070" stroke="#a08060" stroke-width="0.8"/>
+        <path d="M123 118 Q135 124 147 118" stroke="#8a6040" stroke-width="1.8" fill="none"/>
+        <path d="M98 82 Q93 92 95 104 Q100 110 105 106 Q100 96 102 84Z" fill="#c8a878"/>
+        <path d="M172 82 Q177 92 175 104 Q170 110 165 106 Q170 96 168 84Z" fill="#c8a878"/>
+        <rect x="78" y="199" width="114" height="15" fill="#3a2810"/>
+        <text x="135" y="211" font-family="Georgia,serif" font-size="9" fill="#f0c030" text-anchor="middle" letter-spacing="2">IVLIVS CAESAR</text>
+        <rect x="4" y="4" width="262" height="222" fill="none" stroke="#4a3520" stroke-width="2.5"/>
+        <rect x="9" y="9" width="252" height="212" fill="none" stroke="#b8860b" stroke-width="0.8"/>
+      </svg>
+      <figcaption>A marble likeness of Gaius Julius Caesar, Dictator of Rome, now slain this Ides of March.</figcaption>
+    </figure>
+    <!-- Death scene SVG -->
+    <figure class="svg-frame">
+      <svg viewBox="0 0 270 190" xmlns="http://www.w3.org/2000/svg">
+        <rect width="270" height="190" fill="#c0aa68"/>
+        <rect x="0" y="0" width="270" height="95" fill="#8b3a1a" opacity="0.25"/>
+        <rect x="10" y="6" width="11" height="165" rx="3" fill="#b8a060" opacity="0.7"/>
+        <rect x="29" y="6" width="11" height="165" rx="3" fill="#b8a060" opacity="0.45"/>
+        <rect x="230" y="6" width="11" height="165" rx="3" fill="#b8a060" opacity="0.45"/>
+        <rect x="249" y="6" width="11" height="165" rx="3" fill="#b8a060" opacity="0.7"/>
+        <rect x="0" y="148" width="270" height="42" fill="#a89050"/>
+        <path d="M105 52 Q116 73 126 98 Q132 115 141 111 Q153 106 148 87 Q138 65 124 52Z" fill="#e8e0c8"/>
+        <path d="M105 52 Q93 62 88 77 Q97 90 111 95 Q117 84 126 98Z" fill="#ddd8c0"/>
+        <ellipse cx="124" cy="115" rx="21" ry="8" fill="#8b1a1a" opacity="0.55"/>
+        <ellipse cx="105" cy="49" rx="11" ry="13" fill="#d4b896" transform="rotate(18,105,49)"/>
+        <ellipse cx="55" cy="97" rx="9" ry="15" fill="#7a6030"/>
+        <circle cx="55" cy="80" r="8" fill="#c8a878"/>
+        <path d="M64 85 Q80 75 89 65" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <polygon points="91,61 95,67 87,67" fill="#b0b0b0"/>
+        <ellipse cx="213" cy="95" rx="9" ry="15" fill="#6a5828"/>
+        <circle cx="213" cy="78" r="8" fill="#c8a878"/>
+        <path d="M204 83 Q188 73 179 65" stroke="#a0a0a0" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <polygon points="177,61 173,67 181,67" fill="#b0b0b0"/>
+        <text x="135" y="182" font-family="Georgia,serif" font-size="8" fill="#1a1208" text-anchor="middle" font-style="italic">The Death of Caesar — Theatre of Pompey, XLIV B.C.</text>
+        <rect x="3" y="3" width="264" height="184" fill="none" stroke="#4a3520" stroke-width="2.5"/>
+        <rect x="8" y="8" width="254" height="174" fill="none" stroke="#b8860b" stroke-width="0.8"/>
+      </svg>
+      <figcaption>The Death of Caesar — treachery and blood at the Theatre of Pompey.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<div class="gold-rule">✦ ✦ ✦ ✦ ✦</div>
+
+<!-- ══ TWO SUPPLEMENTARY ARTICLES ══ -->
+<div class="three-cols reveal" id="supplements">
+  <div class="col">
+    <span class="section-banner">SUPPLEMENTARY ARTICLE I</span>
+    <h3>Antony's Oration Turns Rome Against the Conspirators</h3>
+    <span class="byline">By Flavia Maxima · Forum Correspondent</span>
+    <p class="drop">Mark Antony, granted the right to speak at Caesar's funeral by a perhaps overly trusting Brutus, delivered <span class="ld" data-type="Hyperbole" data-label="an oration so powerful it shook the city — exaggeration for effect">an oration so powerful it shook the very stones of the Forum</span>. Beginning with "Friends, Romans, countrymen" — he spoke with calculated precision.</p>
+    <p>Antony repeatedly styled Brutus an <span class="ld" data-type="Irony (Verbal)" data-label="Antony calls Brutus 'honourable' but means the opposite — sarcasm used as a rhetorical weapon">"honourable man"</span> with an irony so sharp as to provoke the assembled citizens to fury. He displayed Caesar's bloodied toga, and read aloud a will bequeathing Caesar's gardens to the people and seventy-five drachmas to every Roman citizen.</p>
+    <p>By the time Antony had finished, <span class="ld" data-type="Metaphor" data-label="the crowd's mood compared to a tide that had turned">the tide of Roman opinion had turned with the force of the Tiber in flood</span>, and the conspirators' cause was lost.</p>
+    <div class="pull-quote">
+      <blockquote>"Friends, Romans, countrymen, lend me your ears."</blockquote>
+      <cite>— Mark Antony, Forum Romanum</cite>
+    </div>
+    <div class="ld-key"><strong>DEVICES:</strong> Hyperbole · Verbal Irony ("honourable man") · Metaphor (tide)</div>
+  </div>
+  <div class="col-div"></div>
+  <div class="col">
+    <span class="section-banner">SUPPLEMENTARY ARTICLE II</span>
+    <h3>Omens Ignored: Soothsayer, Dreams, and Lions in the Streets</h3>
+    <span class="byline">By Tertia Cornelia · Palace Correspondent</span>
+    <p class="drop">Those close to Caesar reveal that this morning was not without its warnings. Caesar's wife, Calpurnia, besought him urgently not to attend the Senate, having been visited by <span class="ld" data-type="Personification" data-label="dreams given the power to show the future — dreams treated as living messengers">dreams that spoke to her of blood and death</span>. She saw Caesar's statue spouting blood while Romans bathed their hands in it and smiled.</p>
+    <p>Caesar was briefly persuaded to remain at home — but Decius Brutus arrived and, <span class="ld" data-type="Simile" data-label="compares Decius's flattery to honey used to trap a fly">sweet as honey laid to trap a fly</span>, convinced the great man that Calpurnia had misread her dreams, and that the Senate awaited him with great honours.</p>
+    <p>Most fatally, a soothsayer had warned Caesar days prior. As Caesar passed him on the way to the Capitol, he called out — "The Ides of March are come." The soothsayer replied simply: <span class="ld" data-type="Allusion" data-label="references the soothsayer's earlier prophecy from Act I">"Aye, Caesar — but not gone."</span> <span class="ld" data-type="Pun" data-label="'come' and 'gone' play on Caesar's imminent death">(Note the grim wordplay — "come" and "not gone" — a pun on Caesar's fate.)</span></p>
+    <div class="ld-key"><strong>DEVICES:</strong> Personification (dreams as messengers) · Simile (flattery like honey) · Allusion to prophecy · Pun ("come / not gone")</div>
+  </div>
+  <div class="col-div"></div>
+  <div class="col">
+    <span class="section-banner">SUPPLEMENTARY ARTICLE III</span>
+    <h3>Brutus Speaks: "Not That I Loved Caesar Less"</h3>
+    <span class="byline">By Publius Velius · Forum Reporter</span>
+    <p class="drop">Marcus Junius Brutus descended to the Forum Romanum and addressed the populace, defending the actions of those he called liberators. He declared the deed was done not out of malice toward Caesar the man, but out of love for Rome and fear of tyranny. <span class="ld" data-type="Rhetorical Device (Antithesis)" data-label="opposing ideas placed side by side to highlight contrast">"Not that I loved Caesar less, but that I loved Rome more"</span> — a pairing of opposing loves that placed Brutus's duty to the state above his loyalty to his friend.</p>
+    <p>The crowd appeared briefly swayed by Brutus's <span class="ld" data-type="Rhetorical Device (Logos)" data-label="appeal to logic and reason — Brutus argues rationally rather than emotionally">logical and reasoned argument</span>. He appealed to their minds rather than their hearts — a choice that would ultimately cost him the day, for Antony, who followed him, would appeal to their hearts instead.</p>
+    <p><span class="ld" data-type="Irony (Dramatic)" data-label="the audience knows Brutus's speech will backfire — dramatic irony">In granting Antony permission to speak, Brutus sealed his own fate</span> — a fatal miscalculation that this correspondent fears shall be debated for centuries.</p>
+    <div class="ld-key"><strong>DEVICES:</strong> Rhetorical Antithesis · Logos (rational appeal) · Dramatic Irony</div>
+  </div>
+</div>
+
+<div class="gold-rule">✦ ✦ ✦ ✦ ✦</div>
+
+<!-- ══ POLITICAL CARTOON ══ -->
+<section class="full-section reveal" id="cartoon">
+  <span class="section-banner">POLITICAL CARTOON</span>
+  <h2>The Lean and Hungry Man</h2>
+  <p style="font-size:0.8rem;color:var(--ink-faded);font-style:italic;margin-bottom:10px">Political cartoons use imagery and humor to satirize the powerful and highlight important themes. The cartoon below satirizes Caesar's pride and Cassius's manipulation.</p>
+  <div class="cartoon-box">
+    <svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg">
+      <rect width="700" height="420" fill="#f0e4b0"/>
+      <!-- Background: Roman columns -->
+      <rect x="0" y="280" width="700" height="140" fill="#c8b878"/>
+      <rect x="30" y="80" width="18" height="200" rx="4" fill="#c8a860" opacity="0.4"/>
+      <rect x="660" y="80" width="18" height="200" rx="4" fill="#c8a860" opacity="0.4"/>
+      <!-- Caesar, large and imposing, center -->
+      <!-- Body toga -->
+      <ellipse cx="290" cy="290" rx="65" ry="30" fill="#d8d0b0"/>
+      <path d="M230 250 Q210 220 220 180 Q228 155 250 148 L250 260Z" fill="#e8e0c0"/>
+      <path d="M350 250 Q370 220 360 180 Q352 155 330 148 L330 260Z" fill="#e8e0c0"/>
+      <path d="M248 148 Q290 132 332 148 L330 260 Q290 254 250 260Z" fill="#d8d0b0"/>
+      <!-- Head -->
+      <ellipse cx="290" cy="120" rx="48" ry="54" fill="#d4b896"/>
+      <!-- Big laurel wreath (symbol of power) -->
+      <ellipse cx="290" cy="82" rx="46" ry="11" fill="none" stroke="#4a6828" stroke-width="3"/>
+      <path d="M244 82 Q249 68 258 74 Q249 88 244 82Z" fill="#5a7830"/>
+      <path d="M258 70 Q263 56 272 62 Q263 76 258 70Z" fill="#6a8838"/>
+      <path d="M274 64 Q279 50 288 56 Q279 70 274 64Z" fill="#7a9840"/>
+      <path d="M298 64 Q303 50 312 56 Q303 70 298 64Z" fill="#7a9840"/>
+      <path d="M312 70 Q317 56 326 62 Q317 76 312 70Z" fill="#6a8838"/>
+      <path d="M326 82 Q331 68 340 74 Q331 88 326 82Z" fill="#5a7830"/>
+      <circle cx="290" cy="74" r="5" fill="#c8a020"/>
+      <!-- Caesar's face, proud, slightly smug -->
+      <ellipse cx="273" cy="116" rx="8" ry="6" fill="#2a1a08"/>
+      <ellipse cx="307" cy="116" rx="8" ry="6" fill="#2a1a08"/>
+      <circle cx="274" cy="115" r="2.5" fill="#fff" opacity="0.5"/>
+      <circle cx="308" cy="115" r="2.5" fill="#fff" opacity="0.5"/>
+      <path d="M284 128 L282 137 Q290 141 298 137 L296 128" fill="#c0a070"/>
+      <!-- Smug smile -->
+      <path d="M278 150 Q290 158 302 150" stroke="#8a6040" stroke-width="2.5" fill="none"/>
+      <!-- Caesar's speech bubble -->
+      <path d="M340 90 Q400 60 480 70 Q540 75 550 110 Q555 145 500 155 Q460 162 420 148 Q370 160 340 130 Q310 100 340 90Z" fill="#fff" stroke="#4a3520" stroke-width="2"/>
+      <text x="380" y="100" font-family="Georgia,serif" font-size="13" fill="#1a1208" text-anchor="middle" font-style="italic">"I am as constant</text>
+      <text x="380" y="118" font-family="Georgia,serif" font-size="13" fill="#1a1208" text-anchor="middle" font-style="italic">as the Northern Star!"</text>
+      <text x="380" y="140" font-family="Georgia,serif" font-size="10" fill="#8b1a1a" text-anchor="middle">— Julius Caesar, Act III.i</text>
+      <!-- Cassius, thin and scheming, left -->
+      <!-- Body -->
+      <ellipse cx="100" cy="295" rx="30" ry="18" fill="#a89060"/>
+      <path d="M74 260 Q62 240 66 210 Q70 190 80 185 L80 265Z" fill="#b8a070"/>
+      <path d="M126 260 Q138 240 134 210 Q130 190 120 185 L120 265Z" fill="#b8a070"/>
+      <path d="M80 185 Q100 175 120 185 L120 265 Q100 260 80 265Z" fill="#a89060"/>
+      <!-- Cassius head, lean face -->
+      <ellipse cx="100" cy="150" rx="28" ry="35" fill="#c8a878"/>
+      <!-- Thin hair -->
+      <path d="M72 148 Q72 120 100 115 Q128 120 128 148 Q124 126 100 122 Q76 126 72 148Z" fill="#2a1808"/>
+      <!-- Scheming eyes, narrowed -->
+      <ellipse cx="88" cy="146" rx="5" ry="3.5" fill="#1a1008"/>
+      <ellipse cx="112" cy="146" rx="5" ry="3.5" fill="#1a1008"/>
+      <!-- Raised eyebrow, scheming look -->
+      <path d="M82 138 Q88 132 93 137" stroke="#3a2010" stroke-width="2" fill="none"/>
+      <path d="M107 137 Q112 132 118 138" stroke="#3a2010" stroke-width="2" fill="none"/>
+      <path d="M92 155 L91 161 Q100 165 109 161 L108 155" fill="#b89868"/>
+      <!-- Thin scheming smile -->
+      <path d="M89 170 Q100 175 111 170" stroke="#7a5030" stroke-width="1.5" fill="none"/>
+      <!-- Cassius has a dagger behind his back -->
+      <path d="M125 220 Q140 215 148 205" stroke="#808080" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <polygon points="150,201 154,207 146,206" fill="#aaaaaa"/>
+      <!-- Cassius speech bubble -->
+      <path d="M128 140 Q180 100 260 115 Q300 120 305 150 Q308 180 268 188 Q230 195 190 178 Q155 190 128 170 Q102 150 128 140Z" fill="#fffce8" stroke="#4a3520" stroke-width="1.5"/>
+      <text x="218" y="148" font-family="Georgia,serif" font-size="11" fill="#1a1208" text-anchor="middle" font-style="italic">"Yond Caesar hath</text>
+      <text x="218" y="164" font-family="Georgia,serif" font-size="11" fill="#1a1208" text-anchor="middle" font-style="italic">a lean and hungry look..."</text>
+      <text x="218" y="180" font-family="Georgia,serif" font-size="9" fill="#8b1a1a" text-anchor="middle">— Cassius, Act I.ii</text>
+      <!-- Stars/Northern Star in sky -->
+      <text x="590" y="50" font-family="serif" font-size="28" fill="#b8860b" opacity="0.8">★</text>
+      <text x="560" y="80" font-family="serif" font-size="16" fill="#b8860b" opacity="0.5">★</text>
+      <text x="620" y="90" font-family="serif" font-size="12" fill="#b8860b" opacity="0.4">★</text>
+      <text x="610" y="40" font-family="serif" font-size="10" fill="#4a3520" text-anchor="middle" font-style="italic">Northern Star</text>
+      <!-- Arrow pointing from Northern Star to Caesar -->
+      <path d="M600 58 Q520 80 430 110" stroke="#b8860b" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#arrow)"/>
+      <!-- Caption below cartoon -->
+      <text x="350" y="385" font-family="Georgia,serif" font-size="11" fill="#1a1208" text-anchor="middle" font-style="italic">Caesar, bloated with pride, compares himself to the immovable Northern Star — while Cassius lurks with a hidden dagger.</text>
+      <text x="350" y="402" font-family="Georgia,serif" font-size="10" fill="#8b1a1a" text-anchor="middle">[ Satirizes Caesar's hubris (excessive pride) — his greatest tragic flaw ]</text>
+      <!-- Border -->
+      <rect x="4" y="4" width="692" height="412" fill="none" stroke="#4a3520" stroke-width="3"/>
+      <rect x="10" y="10" width="680" height="400" fill="none" stroke="#b8860b" stroke-width="1"/>
+    </svg>
+    <div class="caption">
+      <strong>THE LEAN AND HUNGRY MAN vs. THE NORTHERN STAR</strong> — Caesar's fatal flaw of <em>hubris</em> (excessive pride) is satirized here: he believes himself as immovable as a star, while Cassius — Caesar's own foil, lean and scheming — plots in the shadows. The hidden dagger behind Cassius's back symbolizes the conspiracy already in motion.
+      <br><br>
+      <span style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.1em;color:var(--red)">LITERARY DEVICES: Allusion (Northern Star speech, Act III) · Metaphor (Caesar = Northern Star) · Irony (Caesar calls himself constant moments before his death)</span>
+    </div>
+  </div>
+</section>
+
+<div class="gold-rule">✦ ✦ ✦ ✦ ✦</div>
+
+<!-- ══ EDITORIAL ══ -->
+<section class="full-section reveal" id="editorial">
+  <span class="section-banner">EDITORIAL</span>
+  <div class="editorial-box">
+    <h3>On Ambition, Honour, and the Death of the Republic</h3>
+    <span class="byline" style="display:block;margin-bottom:12px">Editorial — The Roman Times Board of Scribes</span>
+    <p class="drop">The men who killed Caesar this morning called themselves liberators. They claimed to act in the name of the Republic, of freedom, of Rome herself. <span class="ld" data-type="Rhetorical Device (Rhetorical Question)" data-label="questions the reader directly to provoke thought without expecting an answer">But we ask: what Republic is preserved by murder? What freedom is born from treachery?</span></p>
+    <p>We do not dispute that Caesar was ambitious. <span class="ld" data-type="Metaphor" data-label="ambition compared to fire — powerful but dangerous">Ambition is a fire that warms those near it and burns those too close.</span> Caesar stood too close to that fire — but so, we fear, shall Rome now stand, as the conspirators have lit a greater conflagration than they imagined.</p>
+    <p>Marcus Brutus, the man <span class="ld" data-type="Allusion" data-label="alludes to Brutus's descent from Lucius Junius Brutus, who expelled Rome's last king">whose bloodline traces to the very man who freed Rome from its last tyrant</span>, acted out of genuine principle. We do not doubt his sincerity. Yet <span class="ld" data-type="Irony (Situational)" data-label="the conspirators tried to save the Republic but their actions destroyed it — situational irony">in attempting to save the Republic, the conspirators may have destroyed it.</span> By inviting Antony to speak — by trusting the loyalty of a man whose devotion to Caesar was well known — Brutus has handed Rome to chaos.</p>
+    <p>What ought a citizen to do when the law is threatened by one who governs it? <span class="ld" data-type="Rhetorical Device (Anaphora)" data-label="repetition of 'When' at the start of each clause for emphasis">When the powerful grow too powerful? When ambition eclipses wisdom? When friendship wars with duty?</span> These are the questions Julius Caesar's death has left to us — and to every generation that shall follow.</p>
+    <p>The Roman Times holds that Caesar's death solves nothing. Rome needed reform, not regicide. The Republic needed strengthening, not a sword. We mourn the man and fear the consequences. <span class="ld" data-type="Hyperbole" data-label="exaggerates scope to suggest the historical significance of this moment">History itself has changed its course today, and none of us shall live to see where it leads.</span></p>
+    <div class="ld-key"><strong>LITERARY DEVICES IN EDITORIAL:</strong> Rhetorical Question · Metaphor (ambition as fire) · Allusion (Brutus's ancestor) · Situational Irony · Anaphora ("When...When...When") · Hyperbole</div>
+    <div class="editorial-sig">— The Editors, The Roman Times · The Ides of March, XLIV B.C.</div>
+  </div>
+</section>
+
+<div class="gold-rule">✦ ✦ ✦ ✦ ✦</div>
+
+<!-- ══ OBITUARIES ══ -->
+<section class="full-section reveal" id="obituaries">
+  <span class="section-banner">OBITUARIES</span>
+  <div class="obit-grid">
+    <div class="obit">
+      <h3>Gaius Julius Caesar</h3>
+      <span class="obit-dates">100 B.C. – 15 March, XLIV B.C. · Aged 55 Years</span>
+      <p>Rome has lost its greatest son and most divisive figure. <span class="ld" data-type="Metaphor" data-label="Caesar's life compared to a comet — brilliant, fast, and brief">Caesar blazed across the sky of Roman history like a comet</span> — brilliant, unmistakable, and gone too soon. Born to the patrician Julian clan, he rose through military conquest, political cunning, and sheer force of personality to become Dictator Perpetuo of the Roman world.</p>
+      <p>He conquered Gaul, crossed the Rubicon, and defeated Pompey. He was, by his own admission, not afraid of death — and he proved it today. He is survived by his wife Calpurnia and his adopted son Gaius Octavius.</p>
+      <p><em>His final words, reportedly spoken upon recognizing Brutus among his assassins: "Et tu, Bruté?"</em></p>
+      <span class="rip">✦ REQUIESCAT IN PACE ✦</span>
+    </div>
+    <div class="obit">
+      <h3>Marcus Junius Brutus</h3>
+      <span class="obit-dates">85 B.C. – 42 B.C. · Aged 43 Years · Died at Philippi</span>
+      <p>Marcus Junius Brutus, Senator, soldier, and <span class="ld" data-type="Allusion" data-label="alludes to Mark Antony's famous eulogy at the end of the play">the man whom even his enemy Mark Antony called "the noblest Roman of them all"</span>, died upon his own sword at the plains of Philippi. He had led the forces of the Republic in a final, unsuccessful stand against the Second Triumvirate.</p>
+      <p>Brutus was a man of <span class="ld" data-type="Metaphor" data-label="honour compared to a shield that ultimately couldn't protect him">honour that was both his shield and his undoing</span>. He killed a friend in the name of Rome, and paid for it with everything he had. He is survived by no one — his wife Portia preceded him in death.</p>
+      <p><em>History will debate his choice for as long as Rome endures.</em></p>
+      <span class="rip">✦ REQUIESCAT IN PACE ✦</span>
+    </div>
+    <div class="obit">
+      <h3>Portia, Wife of Brutus</h3>
+      <span class="obit-dates">Died circa 43 B.C. · Cause: Grief and Despair</span>
+      <p>Portia, daughter of the philosopher Cato and devoted wife of Marcus Junius Brutus, was <span class="ld" data-type="Personification" data-label="grief given physical power over a person">consumed by grief so powerful it took on the force of a living thing and destroyed her</span>. She was one of the few who knew of the conspiracy before it took place — a burden she bore by wounding her own thigh to prove her constancy to her husband.</p>
+      <p>When Brutus fled Rome and the cause seemed lost, Portia is reported to have swallowed hot coals. Rome mourns a woman of extraordinary loyalty and <span class="ld" data-type="Hyperbole" data-label="exaggerates Portia's courage to emphasize her remarkable character">courage that would shame the bravest soldier on the field.</span></p>
+      <p><em>"I am not well in health, and that is all." — Portia, Act II</em></p>
+      <span class="rip">✦ REQUIESCAT IN PACE ✦</span>
+    </div>
+  </div>
+</section>
+
+<div class="gold-rule">✦ ✦ ✦ ✦ ✦</div>
+
+<!-- ══ DRAMATIS PERSONAE ══ -->
+<div id="personae">
+  <div class="section-label">DRAMATIS PERSONAE — CLICK TO LEARN MORE</div>
+  <div class="chars-grid reveal">
+    <div class="char-card" onclick="openModal('caesar')">
+      <div class="char-svg-wrap">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect width="80" height="80" fill="#e8d9a8"/>
+          <path d="M18 58 Q18 38 40 32 Q62 38 62 58 L58 72 Q48 78 40 78 Q32 78 22 72Z" fill="#c8b070"/>
+          <ellipse cx="40" cy="44" rx="20" ry="24" fill="#d4b896"/>
+          <g fill="#5a7830"><ellipse cx="40" cy="24" rx="18" ry="5"/>
+            <path d="M22 24 Q25 17 30 20 Q25 28 22 24Z"/><path d="M30 19 Q33 12 38 15 Q33 23 30 19Z"/>
+            <path d="M38 16 Q41 9 46 12 Q41 20 38 16Z"/><path d="M47 19 Q50 12 55 15 Q50 23 47 19Z"/>
+            <path d="M55 24 Q58 17 63 20 Q58 28 55 24Z"/>
+          </g>
+          <circle cx="40" cy="19" r="2.5" fill="#c8a020"/>
+          <ellipse cx="31" cy="43" rx="5" ry="3.5" fill="#2a1a08"/><ellipse cx="49" cy="43" rx="5" ry="3.5" fill="#2a1a08"/>
+          <circle cx="32" cy="42" r="1.5" fill="#fff" opacity="0.4"/><circle cx="50" cy="42" r="1.5" fill="#fff" opacity="0.4"/>
+          <path d="M37 50 L36 55 Q40 58 44 55 L43 50" fill="#c0a070"/>
+          <path d="M34 62 Q40 67 46 62" stroke="#8a6040" stroke-width="1.3" fill="none"/>
+        </svg>
+      </div>
+      <h4>Julius Caesar</h4><span class="char-role">Dictator of Rome</span>
+      <p>Powerful, proud, and ultimately blind to his own vulnerability.</p>
+    </div>
+    <div class="char-card" onclick="openModal('brutus')">
+      <div class="char-svg-wrap">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect width="80" height="80" fill="#e8d9a8"/>
+          <path d="M20 58 Q20 38 40 32 Q60 38 60 58 L56 72 Q46 78 40 78 Q34 78 24 72Z" fill="#c8a878"/>
+          <ellipse cx="40" cy="42" rx="18" ry="22" fill="#d4b896"/>
+          <path d="M22 40 Q22 20 40 17 Q58 20 58 40 Q54 24 40 22 Q26 24 22 40Z" fill="#5a3a20"/>
+          <path d="M28 36 Q33 31 36 35" stroke="#5a3a20" stroke-width="1.8" fill="none"/>
+          <path d="M44 35 Q47 31 52 36" stroke="#5a3a20" stroke-width="1.8" fill="none"/>
+          <ellipse cx="33" cy="40" rx="4.5" ry="3.5" fill="#2a1a08"/><ellipse cx="47" cy="40" rx="4.5" ry="3.5" fill="#2a1a08"/>
+          <path d="M36 50 L35 55 Q40 58 45 55 L44 50" fill="#c0a070"/>
+          <path d="M34 62 Q40 67 46 62" stroke="#8a6040" stroke-width="1.3" fill="none"/>
+        </svg>
+      </div>
+      <h4>Marcus Brutus</h4><span class="char-role">Conspirator · Senator</span>
+      <p>Honourable to a fault — his idealism proved the Republic's undoing.</p>
+    </div>
+    <div class="char-card" onclick="openModal('antony')">
+      <div class="char-svg-wrap">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect width="80" height="80" fill="#e8d9a8"/>
+          <path d="M18 60 Q18 38 40 30 Q62 38 62 60 L58 74 Q46 80 40 80 Q34 80 22 74Z" fill="#c8a060"/>
+          <ellipse cx="40" cy="44" rx="20" ry="26" fill="#d4b896"/>
+          <path d="M20 42 Q20 18 40 14 Q60 18 60 42 Q56 22 40 20 Q24 22 20 42Z" fill="#3a2010"/>
+          <path d="M20 32 Q22 20 28 18" stroke="#3a2010" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <path d="M60 32 Q58 20 52 18" stroke="#3a2010" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <ellipse cx="32" cy="42" rx="5" ry="3.5" fill="#2a1a08"/><ellipse cx="48" cy="42" rx="5" ry="3.5" fill="#2a1a08"/>
+          <circle cx="33" cy="41" r="1.5" fill="#fff" opacity="0.4"/><circle cx="49" cy="41" r="1.5" fill="#fff" opacity="0.4"/>
+          <path d="M36 52 L35 57 Q40 60 45 57 L44 52" fill="#c0a070"/>
+          <path d="M33 64 Q40 70 47 64" stroke="#8a6040" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+      <h4>Mark Antony</h4><span class="char-role">Consul · Caesar's Ally</span>
+      <p>Ruthlessly loyal — his oration turned grief into revolution.</p>
+    </div>
+    <div class="char-card" onclick="openModal('cassius')">
+      <div class="char-svg-wrap">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+          <rect width="80" height="80" fill="#e8d9a8"/>
+          <path d="M24 58 Q24 40 40 34 Q56 40 56 58 L52 72 Q44 78 40 78 Q36 78 28 72Z" fill="#a89060"/>
+          <ellipse cx="40" cy="42" rx="15" ry="22" fill="#c8a878"/>
+          <path d="M25 40 Q25 20 40 17 Q55 20 55 40 Q52 24 40 22 Q28 24 25 40Z" fill="#2a1808"/>
+          <path d="M26 34 Q30 27 34 31" stroke="#3a2010" stroke-width="1.8" fill="none"/>
+          <path d="M46 31 Q50 27 54 34" stroke="#3a2010" stroke-width="1.8" fill="none"/>
+          <ellipse cx="33" cy="40" rx="4" ry="3" fill="#1a1008"/><ellipse cx="47" cy="40" rx="4" ry="3" fill="#1a1008"/>
+          <path d="M36 50 L35 55 Q40 57 45 55 L44 50" fill="#b89868"/>
+          <path d="M35 62 Q40 65 45 62" stroke="#7a5030" stroke-width="1.2" fill="none"/>
+        </svg>
+      </div>
+      <h4>Gaius Cassius</h4><span class="char-role">Conspirator · Senator</span>
+      <p>The lean and hungry architect of the plot — envy and vision combined.</p>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="section-label">SCENES FROM THE ETERNAL CITY</div>
+<div class="gallery-strip reveal">
+  <div class="gallery-item">
+    <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <rect width="200" height="180" fill="#c8b878"/>
+      <rect x="0" y="0" width="200" height="110" fill="#d8cc9a"/>
+      <rect x="0" y="120" width="200" height="60" fill="#a89050"/>
+      <rect x="130" y="52" width="50" height="68" rx="3" fill="#b8a860" stroke="#8a7040" stroke-width="1.5"/>
+      <rect x="142" y="62" width="26" height="58" rx="12" fill="#c8b878"/>
+      <rect x="15" y="40" width="8" height="80" rx="2" fill="#b8a060"/><rect x="30" y="40" width="8" height="80" rx="2" fill="#b8a060"/>
+      <rect x="45" y="40" width="8" height="80" rx="2" fill="#b8a060"/><rect x="60" y="40" width="8" height="80" rx="2" fill="#b8a060"/>
+      <polygon points="9,40 74,40 41,14" fill="#c8b070" stroke="#8a7040" stroke-width="1"/>
+      <rect x="75" y="120" width="50" height="60" fill="#b0a050"/>
+      <ellipse cx="32" cy="128" rx="5" ry="9" fill="#8a7040"/><circle cx="32" cy="117" r="4.5" fill="#c8a878"/>
+      <ellipse cx="52" cy="126" rx="5" ry="9" fill="#7a6030"/><circle cx="52" cy="115" r="4.5" fill="#c8a878"/>
+      <ellipse cx="72" cy="129" rx="5" ry="9" fill="#8a7040"/><circle cx="72" cy="118" r="4.5" fill="#c8a878"/>
+      <text x="100" y="170" font-family="Georgia,serif" font-size="8" fill="#1a1208" text-anchor="middle" letter-spacing="1.5">FORVM ROMANVM</text>
+      <rect x="2" y="2" width="196" height="176" fill="none" stroke="#4a3520" stroke-width="2"/>
+    </svg>
+    <div class="g-cap">THE FORUM ROMANUM</div>
+  </div>
+  <div class="gallery-item">
+    <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <rect width="200" height="180" fill="#b8a860"/>
+      <rect x="0" y="0" width="200" height="90" fill="#8b3a1a" opacity="0.3"/>
+      <rect x="8" y="10" width="10" height="155" rx="2" fill="#b8a060" opacity="0.6"/>
+      <rect x="26" y="10" width="10" height="155" rx="2" fill="#b8a060" opacity="0.4"/>
+      <rect x="164" y="10" width="10" height="155" rx="2" fill="#b8a060" opacity="0.4"/>
+      <rect x="182" y="10" width="10" height="155" rx="2" fill="#b8a060" opacity="0.6"/>
+      <rect x="0" y="148" width="200" height="32" fill="#a08040"/>
+      <path d="M78 48 Q90 72 100 98 Q106 114 116 110 Q128 104 122 82 Q112 60 98 48Z" fill="#e8e0c8"/>
+      <ellipse cx="78" cy="44" rx="11" ry="13" fill="#d4b896" transform="rotate(18,78,44)"/>
+      <ellipse cx="110" cy="118" rx="18" ry="7" fill="#8b1a1a" opacity="0.55"/>
+      <ellipse cx="48" cy="98" rx="9" ry="15" fill="#7a6030"/><circle cx="48" cy="81" r="9" fill="#c8a878"/>
+      <line x1="57" y1="86" x2="74" y2="72" stroke="#aaa" stroke-width="2.5"/>
+      <ellipse cx="158" cy="96" rx="9" ry="15" fill="#6a5828"/><circle cx="158" cy="79" r="9" fill="#c8a878"/>
+      <line x1="149" y1="84" x2="132" y2="72" stroke="#aaa" stroke-width="2.5"/>
+      <text x="100" y="170" font-family="Georgia,serif" font-size="8" fill="#1a1208" text-anchor="middle" font-style="italic">IDES OF MARCH · XLIV B.C.</text>
+      <rect x="2" y="2" width="196" height="176" fill="none" stroke="#4a3520" stroke-width="2"/>
+    </svg>
+    <div class="g-cap">THE ASSASSINATION</div>
+  </div>
+  <div class="gallery-item">
+    <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <rect width="200" height="180" fill="#c8b888"/>
+      <rect x="0" y="42" width="200" height="14" fill="#b0a060"/><rect x="0" y="60" width="200" height="14" fill="#b8a868"/>
+      <rect x="0" y="78" width="200" height="14" fill="#c0b070"/><rect x="0" y="96" width="200" height="14" fill="#c8b878"/>
+      <g fill="#8a7040">
+        <ellipse cx="18" cy="40" rx="6" ry="10"/><circle cx="18" cy="28" r="5.5" fill="#c8a878"/>
+        <ellipse cx="38" cy="40" rx="6" ry="10"/><circle cx="38" cy="28" r="5.5" fill="#c8a878"/>
+        <ellipse cx="58" cy="40" rx="6" ry="10"/><circle cx="58" cy="28" r="5.5" fill="#c8a878"/>
+        <ellipse cx="78" cy="40" rx="6" ry="10"/><circle cx="78" cy="28" r="5.5" fill="#c8a878"/>
+        <ellipse cx="98" cy="40" rx="6" ry="10"/><circle cx="98" cy="28" r="5.5" fill="#c8a878"/>
+        <ellipse cx="118" cy="40" rx="6" ry="10"/><circle cx="118" cy="28" r="5.5" fill="#c8a878"/>
+        <ellipse cx="138" cy="40" rx="6" ry="10"/><circle cx="138" cy="28" r="5.5" fill="#c8a878"/>
+        <ellipse cx="158" cy="40" rx="6" ry="10"/><circle cx="158" cy="28" r="5.5" fill="#c8a878"/>
+        <ellipse cx="178" cy="40" rx="6" ry="10"/><circle cx="178" cy="28" r="5.5" fill="#c8a878"/>
+      </g>
+      <rect x="80" y="118" width="40" height="10" rx="2" fill="#8a7040"/>
+      <rect x="75" y="112" width="50" height="9" rx="2" fill="#a89050"/>
+      <ellipse cx="100" cy="102" rx="10" ry="14" fill="#e8e0c8"/><circle cx="100" cy="86" r="9" fill="#c8a878"/>
+      <path d="M110 98 Q124 88 130 78" stroke="#c8a878" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+      <text x="100" y="170" font-family="Georgia,serif" font-size="8" fill="#1a1208" text-anchor="middle" letter-spacing="1.5">THE ROMAN SENATE</text>
+      <rect x="2" y="2" width="196" height="176" fill="none" stroke="#4a3520" stroke-width="2"/>
+    </svg>
+    <div class="g-cap">THE ROMAN SENATE</div>
+  </div>
+  <div class="gallery-item">
+    <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+      <rect width="200" height="180" fill="#b8a860"/>
+      <g opacity="0.85">
+        <circle cx="14" cy="148" r="7" fill="#c8a878"/><ellipse cx="14" cy="162" rx="8" ry="11" fill="#8a7040"/>
+        <circle cx="32" cy="146" r="7" fill="#c8a878"/><ellipse cx="32" cy="160" rx="8" ry="11" fill="#7a6030"/>
+        <circle cx="50" cy="150" r="7" fill="#c8a878"/><ellipse cx="50" cy="164" rx="8" ry="11" fill="#8a7040"/>
+        <circle cx="68" cy="147" r="7" fill="#c8a878"/><ellipse cx="68" cy="161" rx="8" ry="11" fill="#6a5828"/>
+        <circle cx="144" cy="148" r="7" fill="#c8a878"/><ellipse cx="144" cy="162" rx="8" ry="11" fill="#8a7040"/>
+        <circle cx="162" cy="146" r="7" fill="#c8a878"/><ellipse cx="162" cy="160" rx="8" ry="11" fill="#7a6030"/>
+        <circle cx="180" cy="150" r="7" fill="#c8a878"/><ellipse cx="180" cy="164" rx="8" ry="11" fill="#8a7040"/>
+      </g>
+      <rect x="68" y="100" width="64" height="34" rx="3" fill="#a89050"/>
+      <rect x="62" y="94" width="76" height="12" rx="3" fill="#b8a060"/>
+      <ellipse cx="100" cy="82" rx="13" ry="18" fill="#c8b878"/><circle cx="100" cy="62" r="11" fill="#c8a878"/>
+      <path d="M113 78 Q130 62 140 52" stroke="#c8a878" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <path d="M87 78 Q70 62 60 54" stroke="#c8a878" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <text x="100" y="170" font-family="Georgia,serif" font-size="8" fill="#1a1208" text-anchor="middle" font-style="italic">ANTONY'S FUNERAL ORATION</text>
+      <rect x="2" y="2" width="196" height="176" fill="none" stroke="#4a3520" stroke-width="2"/>
+    </svg>
+    <div class="g-cap">ANTONY'S ORATION</div>
+  </div>
+</div>
+
+<!-- ══ USEFUL LINKS ══ -->
+<section class="full-section reveal" id="links">
+  <span class="section-banner">RESOURCES & FURTHER READING</span>
+  <div class="links-box">
+    <h3>USEFUL LINKS — EXPLORE JULIUS CAESAR FURTHER</h3>
+    <a href="https://www.folger.edu/explore/shakespeares-works/julius-caesar/" target="_blank">Folger Shakespeare Library — Full Text of Julius Caesar</a>
+    <a href="https://www.sparknotes.com/shakespeare/juliuscaesar/" target="_blank">SparkNotes — Julius Caesar Study Guide & Analysis</a>
+    <a href="https://www.britannica.com/biography/Julius-Caesar-Roman-ruler" target="_blank">Encyclopaedia Britannica — Historical Biography of Julius Caesar</a>
+    <a href="https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Plutarch/Lives/Caesar*.html" target="_blank">Plutarch's Lives — Shakespeare's Primary Source (University of Chicago)</a>
+    <a href="https://www.poetryfoundation.org/poets/william-shakespeare" target="_blank">Poetry Foundation — Shakespeare's Language & Rhetorical Devices</a>
+    <a href="https://www.shakespeare.org.uk/explore-shakespeare/shakespedia/shakespeares-plays/julius-caesar/" target="_blank">Shakespeare Birthplace Trust — Julius Caesar Overview</a>
+  </div>
+</section>
+
+<div class="gold-rule">✦ ✦ ✦ ✦ ✦</div>
+
+<!-- BOTTOM GRID -->
+<div class="bottom-grid reveal" id="timeline">
+  <div class="bcol">
+    <span class="section-banner">TIMELINE</span>
+    <h3>The Play: Act by Act</h3>
+    <div class="timeline-item"><span class="act-badge">ACT I</span><p>Tribunes chastise Caesar's celebrating crowd. The soothsayer warns of the Ides. Cassius begins seducing Brutus toward conspiracy, appealing to his republican ideals.</p></div>
+    <div class="timeline-item"><span class="act-badge">ACT II</span><p>Brutus, tormented, resolves to join the plot. Portia pleads with him. Caesar ignores Calpurnia's dreams and Artemidorus's letter of warning, and proceeds to his doom.</p></div>
+    <div class="timeline-item"><span class="act-badge">ACT III</span><p>The assassination. Antony's devastating funeral oration. The mob erupts in riot. Brutus and Cassius are forced to flee Rome entirely.</p></div>
+    <div class="timeline-item"><span class="act-badge">ACT IV</span><p>The Triumvirate consolidates power. Brutus and Cassius quarrel then reconcile. The Ghost of Caesar visits Brutus, promising to meet him at Philippi.</p></div>
+    <div class="timeline-item"><span class="act-badge">ACT V</span><p>The Battle of Philippi. Both Cassius and Brutus die by their own hands. Antony eulogises Brutus as "the noblest Roman of them all."</p></div>
+  </div>
+  <div class="bcol">
+    <span class="section-banner">THEMES</span>
+    <h3>Central Themes of the Play</h3>
+    <p>Shakespeare's tragedy compels its audience to grapple with questions as urgent today as in Caesar's Rome. Chief among these is the tension between <em>personal honour</em> and <em>political necessity</em> — embodied in Brutus, who kills a friend out of principle and destroys himself in the process.</p>
+    <p style="margin-top:9px">The play asks: what makes a tyrant? Is ambition alone sufficient cause for murder? And perhaps most powerfully — <span class="ld" data-type="Rhetorical Device (Rhetorical Question)" data-label="provokes the reader to think without expecting a direct answer">can the end ever truly justify the means?</span></p>
+    <p style="margin-top:9px">Most haunting is the play's treatment of <em>fate</em>. Soothsayers, omens, and ghosts suggest Caesar's end was written long before any conspirator raised a blade.</p>
+  </div>
+  <div class="bcol">
+    <span class="section-banner">QUOTATIONS</span>
+    <h3>Words for the Ages</h3>
+    <div class="qcard"><p>"Cowards die many times before their deaths; the valiant never taste of death but once."</p><p class="qsrc">— Julius Caesar, Act II · <em style="font-size:0.68rem;color:var(--red)">Metaphor: death as something one can taste</em></p></div>
+    <div class="qcard"><p>"There is a tide in the affairs of men, which, taken at the flood, leads on to fortune."</p><p class="qsrc">— Brutus, Act IV · <em style="font-size:0.68rem;color:var(--red)">Metaphor: opportunity compared to a tide</em></p></div>
+    <div class="qcard"><p>"The fault, dear Brutus, is not in our stars, but in ourselves, that we are underlings."</p><p class="qsrc">— Cassius, Act I · <em style="font-size:0.68rem;color:var(--red)">Allusion to astrology; Rhetorical appeal (Logos)</em></p></div>
+    <div class="qcard"><p>"This was the most unkindest cut of all."</p><p class="qsrc">— Mark Antony, Act III · <em style="font-size:0.68rem;color:var(--red)">Metaphor: Brutus's betrayal as a literal and figurative wound</em></p></div>
+    <div class="qcard"><p>"This is the noblest Roman of them all."</p><p class="qsrc">— Mark Antony on Brutus, Act V · <em style="font-size:0.68rem;color:var(--red)">Irony: the enemy's eulogy as the highest praise</em></p></div>
+  </div>
+</div>
+
+</div><!-- /paper-body -->
+
+<footer class="paper-footer">
+  <span>THE ROMAN TIMES · EST. A.U.C. 709</span>
+  <span class="footer-mid">Printed by Order of the Senate and People of Rome — S.P.Q.R.</span>
+  <span>ALL RIGHTS RESERVED UNDER ROMAN LAW</span>
+</footer>
+</div><!-- /newspaper -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-svg-wrap" id="modal-svg"></div>
+    <h2 id="modal-name"></h2>
+    <span class="role" id="modal-role"></span>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const svgs={caesar:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#e8d9a8"/><path d="M26 82 Q26 52 60 44 Q94 52 94 82 L90 104 Q74 114 60 114 Q46 114 30 104Z" fill="#c8b070"/><ellipse cx="60" cy="60" rx="30" ry="36" fill="#d4b896"/><g fill="#5a7830"><ellipse cx="60" cy="30" rx="28" ry="7"/><path d="M32 30 Q36 20 42 24 Q36 34 32 30Z"/><path d="M42 22 Q46 12 52 16 Q46 26 42 22Z"/><path d="M54 18 Q58 8 64 12 Q58 22 54 18Z"/><path d="M67 22 Q71 12 77 16 Q71 26 67 22Z"/><path d="M77 30 Q81 20 87 24 Q81 34 77 30Z"/></g><circle cx="60" cy="24" r="4" fill="#c8a020"/><ellipse cx="46" cy="58" rx="6.5" ry="5" fill="#2a1a08"/><ellipse cx="74" cy="58" rx="6.5" ry="5" fill="#2a1a08"/><path d="M55 70 L54 77 Q60 81 66 77 L65 70" fill="#c0a070"/><path d="M50 90 Q60 97 70 90" stroke="#8a6040" stroke-width="1.8" fill="none"/></svg>`,
+brutus:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#e8d9a8"/><path d="M28 82 Q28 56 60 48 Q92 56 92 82 L88 104 Q74 112 60 112 Q46 112 32 104Z" fill="#c8a878"/><ellipse cx="60" cy="60" rx="27" ry="32" fill="#d4b896"/><path d="M33 56 Q33 28 60 24 Q87 28 87 56 Q82 36 60 32 Q38 36 33 56Z" fill="#5a3a20"/><path d="M40 50 Q46 43 50 48" stroke="#5a3a20" stroke-width="2.2" fill="none"/><path d="M70 48 Q74 43 80 50" stroke="#5a3a20" stroke-width="2.2" fill="none"/><ellipse cx="47" cy="56" rx="6" ry="4.5" fill="#2a1a08"/><ellipse cx="73" cy="56" rx="6" ry="4.5" fill="#2a1a08"/><path d="M54 70 L53 77 Q60 80 67 77 L66 70" fill="#c0a070"/><path d="M50 88 Q60 94 70 88" stroke="#8a6040" stroke-width="1.8" fill="none"/></svg>`,
+antony:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#e8d9a8"/><path d="M24 84 Q24 56 60 46 Q96 56 96 84 L92 106 Q74 116 60 116 Q46 116 28 106Z" fill="#c8a060"/><ellipse cx="60" cy="62" rx="30" ry="36" fill="#d4b896"/><path d="M30 60 Q30 28 60 22 Q90 28 90 60 Q85 36 60 30 Q35 36 30 60Z" fill="#3a2010"/><path d="M30 46 Q33 28 42 24" stroke="#3a2010" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M90 46 Q87 28 78 24" stroke="#3a2010" stroke-width="7" stroke-linecap="round" fill="none"/><ellipse cx="47" cy="58" rx="7" ry="5" fill="#2a1a08"/><ellipse cx="73" cy="58" rx="7" ry="5" fill="#2a1a08"/><path d="M55 72 L54 80 Q60 84 66 80 L65 72" fill="#c0a070"/><path d="M50 94 Q60 102 70 94" stroke="#8a6040" stroke-width="2" fill="none"/></svg>`,
+cassius:`<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" fill="#e8d9a8"/><path d="M34 82 Q34 56 60 48 Q86 56 86 82 L82 102 Q70 112 60 112 Q50 112 38 102Z" fill="#a89060"/><ellipse cx="60" cy="60" rx="22" ry="32" fill="#c8a878"/><path d="M38 58 Q38 30 60 26 Q82 30 82 58 Q78 36 60 32 Q42 36 38 58Z" fill="#2a1808"/><path d="M40 50 Q46 40 50 46" stroke="#4a2a10" stroke-width="2" fill="none"/><path d="M70 46 Q74 40 80 50" stroke="#4a2a10" stroke-width="2" fill="none"/><ellipse cx="48" cy="56" rx="5.5" ry="4" fill="#1a1008"/><ellipse cx="72" cy="56" rx="5.5" ry="4" fill="#1a1008"/><path d="M54 70 L53 76 Q60 80 67 76 L66 70" fill="#b89868"/><path d="M52 90 Q60 95 68 90" stroke="#7a5030" stroke-width="1.5" fill="none"/></svg>`};
+
+const characters={
+  caesar:{name:'Julius Caesar',role:'Dictator Perpetuo of Rome',body:`<p>Gaius Julius Caesar (100–44 BC) was the most powerful man in the Roman world. A brilliant general and cunning politician, he rose to become Dictator Perpetuo of Rome through military conquest and popular support.</p><p>His fatal flaw was hubris — excessive pride. He dismissed every warning, from the soothsayer's prophecy to his wife's dreams, trusting so completely in his own greatness that he could not conceive of his own mortality.</p><div class="quote">"Veni, vidi, vici." — I came, I saw, I conquered. (Allusion to his Pontic campaign)</div><p>In Shakespeare's play, Caesar is both genuinely great and dangerously proud — a study in how the very qualities that elevate a man can also destroy him. His assassination set in motion the end of the Roman Republic.</p>`},
+  brutus:{name:'Marcus Junius Brutus',role:'Senator · Conspirator · Tragic Hero',body:`<p>Marcus Junius Brutus (85–42 BC) is Shakespeare's true tragic hero. A man of deep personal honour and genuine republican conviction, he was the conspiracy's moral anchor — without him, the plot lacked legitimacy.</p><p>Brutus's fatal flaw was idealism taken to a destructive extreme. By trusting Antony, refusing to kill him, and allowing him to speak at the funeral, Brutus handed his enemy the weapon that destroyed him.</p><div class="quote">"Not that I loved Caesar less, but that I loved Rome more." — Rhetorical antithesis: two loves placed in opposition</div><p>Even Antony, his enemy, acknowledged at the end that Brutus alone acted from genuine principle. He is "the noblest Roman of them all" — an ironic tribute from the man who destroyed him.</p>`},
+  antony:{name:'Mark Antony',role:"Consul · Tribune · Caesar's General",body:`<p>Mark Antony (83–30 BC) is Caesar's most loyal and capable ally. He reveals himself after the assassination as a master of rhetoric and political manipulation, transforming personal grief into revolutionary anger.</p><p>His funeral oration is one of the greatest examples of persuasive rhetoric in all of literature. Through verbal irony, emotional appeals (pathos), and strategic use of Caesar's will and toga, he dismantled Brutus's carefully constructed argument in minutes.</p><div class="quote">"Friends, Romans, countrymen, lend me your ears." — Anaphora and direct address; rhetorical device to establish intimacy</div><p>Antony later forms the Second Triumvirate and defeats the conspirators at Philippi — avenging Caesar but burying the Republic in the process.</p>`},
+  cassius:{name:'Gaius Cassius Longinus',role:"Senator · Praetor · Conspiracy's Architect",body:`<p>Gaius Cassius Longinus (?–42 BC) is the true architect of the conspiracy. Caesar himself identified him as dangerous: "Yond Cassius has a lean and hungry look; he thinks too much: such men are dangerous." — a simile and characterisation in one.</p><p>Cassius's motivations mixed genuine republican idealism with personal envy. He was passed over for a position by Caesar and never forgot it. He is the play's great manipulator — exploiting Brutus's idealism to give the conspiracy its moral cover.</p><div class="quote">"The fault, dear Brutus, is not in our stars, but in ourselves, that we are underlings." — Allusion to astrology; Logos (rational argument)</div><p>His fatal mistake came at Philippi: receiving false intelligence that Brutus had been defeated, he took his own life unnecessarily, costing the conspirators everything.</p>`}
+};
+
+function openModal(id){
+  const c=characters[id];
+  document.getElementById('modal-svg').innerHTML=svgs[id];
+  document.getElementById('modal-name').textContent=c.name;
+  document.getElementById('modal-role').textContent=c.role;
+  document.getElementById('modal-body').innerHTML=c.body;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
